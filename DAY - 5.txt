@@ -1,0 +1,181 @@
+                                                            DAY - 5
+======CONSTRAINTS=========
+constrains are rules applied to a table columns in MySQL to ensure that only valid and accurate data is stored in the database
+
+
+in simple words:-
+=================
+constraints = rules that control the data entered into a table
+
+why do we use constraints:-
+===============================
+constraints are used to
+*maintain data integrity
+*prevent invalid data entry
+*avoid duplicate records
+*ensures relationships between tables,
+*make the database reliable and consistent.
+
+
+
+
+types of constraints:-
+===========================
+*integrity constraints
+------------------------
+1) not null
+====================
+the not null constraint ensures that a column cannot contain null(empty). every row must have a value for that column.
+*not null = does not allow null values.
+2)unique
+===============
+the unique key constraint ensures that all values in a column are different.duplicate values are not allowed.
+
+3)primary key
+======================
+primary key is the combination of  unique and not null
+*unique+notnull
+4)foregin key
+====================
+a foreign key creates a relationship between two tables.it ensures that values in the child table must already exists in the parent table.
+
+
+
+4)composite key
+======================
+if we applied more than one column as primary key then we should go for composite key constraint this contain is applicable only for table level not at column-level.
+
+5)default
+==========
+the default constraint automatically assigns a predefined value if no value is provided during insertion.
+
+6)check
+============
+the check constraints ensures that values satisfy a specified condition before insertion or update.
+
+
+
+
+REFERENCIAL ACTIONS:-
+========================
+referencial action defines to what happens to child table data when parent table data is updated ordeleted.
+
+*-->on delete cascade , on update cascade
+
+*--->on delete set null on update set null
+
+
+
+ create table doctors(
+    -> doc_id primary key,
+    -> dname varchar(200),
+    -> salary int,
+    -> DID foreign key
+    -> );
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'primary key,
+dname varchar(200),
+salary int,
+DID foreign key
+)' at line 2
+mysql> use pfs6;
+Database changed
+mysql> create table department(
+    -> DID foreign key,
+    -> dname varchar(100)
+    -> );
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'foreign key,
+dname varchar(100)
+)' at line 2
+mysql> create table department(
+    -> Dep_id int primary key,
+    -> dname varchar(100)
+    -> );
+Query OK, 0 rows affected (0.05 sec)
+
+mysql> create table doctor(
+    -> doc_id int,
+    -> dname varchar(100),
+    -> salary int,
+    -> Dep_id int foreign key
+    -> );
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'foreign key
+)' at line 5
+mysql> create table doctor(
+    -> doc_id int,
+    -> dname varchar(100),
+    -> salary int,
+    -> Dep_id int foreign key
+    -> dname varchar(100),^C
+mysql> create table doctor(
+    -> doc_id int primary key,
+    -> dname varchar(100),
+    -> salary int,
+    -> Dep_id int,
+    -> foreign key(dep_id)
+    -> references department(dep_id)
+    -> on delete set null on update set null
+    -> );
+Query OK, 0 rows affected (0.08 sec)
+
+mysql> insert into department values(101,'it');
+Query OK, 1 row affected (0.02 sec)
+
+mysql> insert into department values(102,'hr');
+Query OK, 1 row affected (0.01 sec)
+
+mysql> insert into doctor values(11,'sneha',500,101,);
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near ')' at line 1
+mysql> insert into doctor values(11,'sneha',500,101);
+Query OK, 1 row affected (0.02 sec)
+
+mysql> insert into doctor values(12,'harshi',1000,102);
+Query OK, 1 row affected (0.02 sec)
+
+mysql> insert into doctor values(12,'harshi',102);
+ERROR 1136 (21S01): Column count doesn't match value count at row 1
+mysql> select
+    -> select*from department;
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'select*from department' at line 2
+mysql> select* from department;
++--------+-------+
+| Dep_id | dname |
++--------+-------+
+|    101 | it    |
+|    102 | hr    |
++--------+-------+
+2 rows in set (0.00 sec)
+
+mysql> select*from doctor;
++--------+--------+--------+--------+
+| doc_id | dname  | salary | Dep_id |
++--------+--------+--------+--------+
+|     11 | sneha  |    500 |    101 |
+|     12 | harshi |   1000 |    102 |
++--------+--------+--------+--------+
+2 rows in set (0.00 sec)
+
+mysql> update department set Dep_id = 105 where Dep_id = 101;
+Query OK, 1 row affected (0.02 sec)
+Rows matched: 1  Changed: 1  Warnings: 0
+
+mysql> delete from doctor where doc_id = 11;
+Query OK, 1 row affected (0.02 sec)
+
+mysql> select*from department;
++--------+-------+
+| Dep_id | dname |
++--------+-------+
+|    102 | hr    |
+|    105 | it    |
++--------+-------+
+2 rows in set (0.00 sec)
+
+mysql> select* from doctor;
++--------+--------+--------+--------+
+| doc_id | dname  | salary | Dep_id |
++--------+--------+--------+--------+
+|     12 | harshi |   1000 |    102 |
++--------+--------+--------+--------+
+1 row in set (0.00 sec)
+
+mysql>
